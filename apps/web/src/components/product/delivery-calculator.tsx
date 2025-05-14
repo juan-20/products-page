@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getWithExpiry, setWithExpiry } from "@/lib/storage";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 interface Address {
 	cep: string;
@@ -99,6 +100,7 @@ export default function DeliveryCalculator() {
 						maxLength={9}
 						className="w-40"
 					/>
+					<Button>OK</Button>
 				</div>
 				{loading && <p className="text-gray-500 text-sm">Buscando CEP...</p>}
 				{error && <p className="text-red-500 text-sm">{error}</p>}
