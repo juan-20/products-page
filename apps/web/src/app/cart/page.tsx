@@ -14,12 +14,6 @@ interface CartInfo {
 	deliveryCep?: string;
 }
 
-export const metadata: Metadata = {
-	title: "Cart - Clothing Store",
-	description: "A clothing store for all your needs",
-	keywords: ["clothing", "store", "fashion"],
-};
-
 export default function CartPage() {
 	const [cartInfo, setCartInfo] = useState<CartInfo>({});
 	const [loading, setLoading] = useState(true);
