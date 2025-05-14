@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 async function getRecommendedProducts() {
-	const res = await fetch("http://localhost:3000/product/recommended", {
+	const res = await fetch("https://products-page-server.vercel.app/product/recommended", {
 		next: {
 			revalidate: 60, // Revalidate every minute
 		},
@@ -44,7 +44,7 @@ async function getRecommendedProducts() {
 }
 
 async function getProducts() {
-	const res = await fetch("http://localhost:3000/product", {
+	const res = await fetch("https://products-page-server.vercel.app/product", {
 		next: {
 			revalidate: 60, // Revalidate every minute
 		},

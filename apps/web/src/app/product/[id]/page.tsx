@@ -12,7 +12,7 @@ interface ProductPageProps {
 }
 
 async function getProduct(productId: string): Promise<ProductProps> {
-	const res = await fetch(`http://localhost:3000/product/${productId}`, {
+	const res = await fetch(`https://products-page-server.vercel.app/product/${productId}`, {
 		next: {
 			revalidate: 60, // Revalidate every minute
 		},
