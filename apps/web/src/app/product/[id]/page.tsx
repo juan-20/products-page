@@ -6,9 +6,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 interface ProductPageProps {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
 async function getProduct(productId: string): Promise<ProductProps> {
@@ -31,11 +31,11 @@ async function getProduct(productId: string): Promise<ProductProps> {
 
 export async function generateStaticParams() {
 	// Return an array of objects with all possible id values
-	return [{ id: "1" }, { id: "2" }, { id: "3" }];
+	return [{ id: "1" }, { id: "2" },];
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-	const product = await getProduct(params.id);
+	const product = await getProduct((await params).id);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
