@@ -2,6 +2,7 @@ import type { ProductProps } from "@/app/page";
 import DeliveryCalculator from "@/components/product/delivery-calculator";
 import ProductGallery from "@/components/product/product-gallery";
 import ProductVariants from "@/components/product/product-variants";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -29,9 +30,22 @@ async function getProduct(productId: string): Promise<ProductProps> {
 	return data.product;
 }
 
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+	const product = await getProduct((await params).id);
+
+	return {
+		title: product.name,
+		description: product.description,
+		keywords: ["clothing", "store", "fashion"],
+		openGraph: {
+			images: [product.images[0]],
+		},
+	};
+}
+
 export async function generateStaticParams() {
 	// Return an array of objects with all possible id values
-	return [{ id: "1" }, { id: "2" },];
+	return [{ id: "1" }, { id: "2" }];
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getWithExpiry } from "@/lib/storage";
+import type { Metadata } from "next";
 import { useEffect, useState } from "react";
 
 interface CartInfo {
@@ -12,6 +13,12 @@ interface CartInfo {
 	};
 	deliveryCep?: string;
 }
+
+export const metadata: Metadata = {
+	title: "Cart - Clothing Store",
+	description: "A clothing store for all your needs",
+	keywords: ["clothing", "store", "fashion"],
+};
 
 export default function CartPage() {
 	const [cartInfo, setCartInfo] = useState<CartInfo>({});
