@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: { id: string } },
+	context: { params: { id: string } },
 ) {
 	const allProducts = [
 		{
@@ -41,7 +41,7 @@ export async function GET(
 		},
 	];
 
-	const productId = Number.parseInt(params.id, 10);
+	const productId = Number.parseInt(context.params.id, 10);
 	const product = allProducts.find((products) => products.id === productId);
 
 	return NextResponse.json({ product });
