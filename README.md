@@ -5,13 +5,39 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 ## Features
 
 - **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework
+- **Next.js 15** - Full-stack React framework with:
+  - App Router
+  - Server Components
+  - Metadata API with OpenGraph images and Twitter cards
+  - Dynamic route parameters
+  - Server-side data fetching and caching
+  - API routes
+  - Error handling and loading states
 - **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **Next.js** - Full-stack React framework
-- **Bun** - Runtime environment
-- **Biome** - Linting and formatting
+- **shadcn/ui** - Reusable UI components with:
+  - Dark mode support
+  - Carousel component
+  - Cards
+  - Buttons
+  - Dropdowns
+  - Labels and inputs
+  - Loading skeletons
+- **Bun** - Fast JavaScript runtime and package manager 
+- **Biome** - Modern linting and formatting
 - **Turborepo** - Optimized monorepo build system
+- **SEO Optimized** with:
+  - OpenGraph metadata for better social media sharing
+  - Twitter card support
+  - Descriptive meta tags
+  - Page-specific metadata
+  - Dynamic OG images based on product data
+- **Responsive Design** - Mobile-first layout that works on all screen sizes
+- **Dynamic Product Pages** with:
+  - Image galleries
+  - Size and color variants
+  - Delivery calculator
+  - Cart functionality
+  - Product recommendations
 
 ## Getting Started
 
