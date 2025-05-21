@@ -11,7 +11,7 @@ import {
 } from "../ui/carousel";
 
 interface ProductGalleryProps {
-	images: string[];
+	images: any[];
 	productName: string;
 }
 
@@ -46,7 +46,7 @@ export default function ProductGallery({
 						<CarouselItem key={index}>
 							<div className="relative aspect-square overflow-hidden rounded-lg">
 								<img
-									src={image}
+									src={image.src}
 									alt={`${productName} view ${index + 1}`}
 									className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
 								/>

@@ -5,34 +5,81 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
+
+[
+  [
+    "P",
+    "M",
+    "G"
+  ],
+  [
+    "Preto",
+    "Azul"
+  ]
+]
+
 interface ProductVariantsProps {
-	sizes: string[];
-	colors: string[];
+	values: [
+		{
+			values: [
+				string[],
+				string[]
+			];
+		}
+	]
+	variants: [
+		{
+			id: number,
+      		product_id: number,
+			price: number,
+			sku: null,
+			position: number,
+			compare_at_price: number,
+			values:[
+				string
+			],
+			created_at: string,
+			updated_at: string,
+			barcode: null,
+			image_id: number,
+			weight: number,
+			inventory_quantity: number,
+			image_url: string,
+		}
+	];
 }
 
 interface VariantSelections {
-	size: string | null;
-	color: string | null;
+	values: [
+		{
+			values: [
+				string[],
+				string[]
+			];
+		}
+	]
+	variants: any[] | null;
 }
 
 const STORAGE_KEY = "product-variants";
 const FIFTEEN_MINUTES = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 export default function ProductVariants({
-	sizes,
-	colors,
+	values,
+	variants,
 }: ProductVariantsProps) {
+	console.log(values[0]?.values);
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 	const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
 	// Load saved selections on component mount
-	useEffect(() => {
-		const savedSelections = getWithExpiry<VariantSelections>(STORAGE_KEY);
-		if (savedSelections) {
-			setSelectedSize(savedSelections.size);
-			setSelectedColor(savedSelections.color);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	const savedSelections = getWithExpiry<VariantSelections>(STORAGE_KEY);
+	// 	if (savedSelections) {
+	// 		setSelectedSize(savedSelections.size);
+	// 		setSelectedColor(savedSelections.color);
+	// 	}
+	// }, []);
 
 	// Save selections whenever they change
 	useEffect(() => {
@@ -53,19 +100,15 @@ export default function ProductVariants({
 			<div>
 				<h3 className="mb-2 font-semibold text-lg">Tamanhos</h3>
 				<div className="flex flex-wrap gap-2">
-					{sizes.map((size) => (
+					{values.map((value, index) => (
 						<button
-							key={size}
-							onClick={() => setSelectedSize(size)}
-							className={`rounded-md border-2 px-4 py-2 transition-colors ${
-								selectedSize === size
-									? "border-green-600 text-green-600"
-									: "hover:border-green-600 hover:text-green-600"
-							}`}
+							key={index}
+							className={`rounded-md border-2 px-4 py-2 transition-colors `}
 						>
-							{size}
+							{}
 						</button>
-					))}
+					)
+					)}
 				</div>
 			</div>
 
@@ -73,7 +116,20 @@ export default function ProductVariants({
 			<div>
 				<h3 className="mb-2 font-semibold text-lg">Cores</h3>
 				<div className="flex flex-wrap gap-2">
-					{colors.map((color) => (
+					{variants.map((variant, index) => (
+						<button
+							key={index}
+							onClick={() => setSelectedColor(variant.values[0])}
+							className={`rounded-md border-2 px-4 py-2 transition-colors ${
+								selectedColor === variant.values[0]
+									? "border-green-600 text-green-600"
+									: "hover:border-green-600 hover:text-green-600"
+							}`}
+						>
+							{variant.values[0]}
+						</button>
+					))}
+					{/* {colors.map((color) => (
 						<button
 							key={color}
 							onClick={() => setSelectedColor(color)}
@@ -85,7 +141,7 @@ export default function ProductVariants({
 						>
 							{color}
 						</button>
-					))}
+					))} */}
 				</div>
 			</div>
 

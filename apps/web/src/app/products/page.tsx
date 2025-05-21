@@ -6,14 +6,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-interface ProductPageProps {
-	params: Promise<{
-		id: string;
-	}>;
-}
 
-async function getProduct(productId: string): Promise<ProductProps> {
-	const res = await fetch(`https://products-page-server.vercel.app/product/${productId}`, {
+async function getProduct() {
+	const res = await fetch(`https://empreender.nyc3.cdn.digitaloceanspaces.com/static/teste-prod-1.json`, {
 		next: {
 			revalidate: 60, // Revalidate every minute
 		},
@@ -27,20 +22,7 @@ async function getProduct(productId: string): Promise<ProductProps> {
 	}
 
 	const data = await res.json();
-	return data.product;
-}
-
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-	const product = await getProduct((await params).id);
-
-	return {
-		title: product.name,
-		description: product.description,
-		keywords: ["clothing", "store", "fashion"],
-		openGraph: {
-			images: [product.images[0]],
-		},
-	};
+	return data;
 }
 
 export async function generateStaticParams() {
@@ -48,12 +30,29 @@ export async function generateStaticParams() {
 	return [{ id: "1" }, { id: "2" }];
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-	const product = await getProduct((await params).id);
+export default async function ProductPage() {
+	const product = await getProduct();
+
+    console.log(product);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
-			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                            {/* Product Gallery */}
+                            <Suspense
+                                fallback={
+                                    <div className="aspect-square animate-pulse rounded-lg bg-gray-100" />
+                                }
+                            >
+                                <ProductGallery images={product.images} productName={product.title} />
+                            </Suspense>
+            
+                           
+            </div>
+
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 				{/* Product Gallery */}
 				<Suspense
 					fallback={
@@ -65,30 +64,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 				{/* Product Info */}
 				<div className="space-y-6">
-					<div>
+                    {/* Price */}
+					{/* <div>
 						<h1 className="mb-2 font-bold text-3xl">{product.name}</h1>
 						<p className="font-bold text-2xl text-green-600">
 							R$ {product.price.toFixed(2)}
 						</p>
-					</div>
+					</div> */}
 
 					<div className="space-y-4">
-						<div>
-							<h3 className="mb-2 font-semibold text-lg">Descrição</h3>
-							<p className="text-gray-700 leading-relaxed">
-								{product.description}
-							</p>
-						</div>
+						
 
 						<Suspense
 							fallback={
 								<div className="h-40 animate-pulse rounded-lg bg-gray-100" />
 							}
 						>
-							{/* <ProductVariants
-								values={product.variants.sizes}
-								variants={product.variants.colors}
-							/> */}
+							<ProductVariants
+								values={product.values}
+								variants={product.variants}
+							/>
 						</Suspense>
 
 						<DeliveryCalculator />
@@ -127,6 +122,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 					</div>
 				</div>
 			</div>
+		
 		</div>
 	);
 }
