@@ -6,13 +6,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-
 async function getProduct() {
-	const res = await fetch(`https://empreender.nyc3.cdn.digitaloceanspaces.com/static/teste-prod-1.json`, {
-		next: {
-			revalidate: 60, // Revalidate every minute
+	const res = await fetch(
+		`https://empreender.nyc3.cdn.digitaloceanspaces.com/static/teste-prod-1.json`,
+		{
+			next: {
+				revalidate: 60, // Revalidate every minute
+			},
 		},
-	});
+	);
 
 	if (!res.ok) {
 		if (res.status === 404) {
@@ -33,15 +35,11 @@ export async function generateStaticParams() {
 export default async function ProductPage() {
 	const product = await getProduct();
 
-    console.log(product);
+	console.log(product);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
-
-      
-
-
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 				{/* Product Gallery */}
 				<Suspense
 					fallback={
@@ -53,7 +51,7 @@ export default async function ProductPage() {
 
 				{/* Product Info */}
 				<div className="space-y-6">
-                    {/* Price */}
+					{/* Price */}
 					{/* <div>
 						<h1 className="mb-2 font-bold text-3xl">{product.name}</h1>
 						<p className="font-bold text-2xl text-green-600">
@@ -62,8 +60,6 @@ export default async function ProductPage() {
 					</div> */}
 
 					<div className="space-y-4">
-						
-
 						<Suspense
 							fallback={
 								<div className="h-40 animate-pulse rounded-lg bg-gray-100" />
@@ -111,7 +107,6 @@ export default async function ProductPage() {
 					</div>
 				</div>
 			</div>
-		
 		</div>
 	);
 }

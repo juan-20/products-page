@@ -37,7 +37,9 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "Mus Clothing Store",
 		description: "A modern clothing store built with Next.js and TypeScript",
-		images: ["https://media.discordapp.net/attachments/897676728288288808/1372036042051555338/rabbit.png?ex=68254fa3&is=6823fe23&hm=e16ef4a4c0bcba0ccfa28ecbadca0a26cf179e7af2cd806ad957375d01d654b8&=&format=webp&quality=lossless"],
+		images: [
+			"https://media.discordapp.net/attachments/897676728288288808/1372036042051555338/rabbit.png?ex=68254fa3&is=6823fe23&hm=e16ef4a4c0bcba0ccfa28ecbadca0a26cf179e7af2cd806ad957375d01d654b8&=&format=webp&quality=lossless",
+		],
 		creator: "@musclothing",
 	},
 	viewport: {

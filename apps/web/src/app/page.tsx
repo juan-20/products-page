@@ -31,11 +31,14 @@ export const metadata: Metadata = {
 };
 
 async function getRecommendedProducts() {
-	const res = await fetch("https://products-page-server.vercel.app/product/recommended", {
-		next: {
-			revalidate: 60, // Revalidate every minute
+	const res = await fetch(
+		"https://products-page-server.vercel.app/product/recommended",
+		{
+			next: {
+				revalidate: 60, // Revalidate every minute
+			},
 		},
-	});
+	);
 	if (!res.ok) {
 		throw new Error("Failed to fetch recommended products");
 	}
