@@ -1,7 +1,7 @@
-import type { ProductProps } from "@/app/page";
 import DeliveryCalculator from "@/components/product/delivery-calculator";
 import ProductGallery from "@/components/product/product-gallery";
 import ProductVariants from "@/components/product/product-variants";
+import type { ProductProps } from "@/types/util";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -13,11 +13,16 @@ interface ProductPageProps {
 }
 
 async function getProduct(productId: string): Promise<ProductProps> {
-	const res = await fetch(`https://products-page-server.vercel.app/product/${productId}`, {
-		next: {
-			revalidate: 60, // Revalidate every minute
+	const res = await fetch(
+		`https://empreender.nyc3.cdn.digitaloceanspaces.com/static/teste-prod-${productId}.json`,
+		{
+			next: {
+				revalidate: 60, // Revalidate every minute
+			},
 		},
-	});
+	);
+
+	console.log(res);
 
 	if (!res.ok) {
 		if (res.status === 404) {
@@ -27,10 +32,12 @@ async function getProduct(productId: string): Promise<ProductProps> {
 	}
 
 	const data = await res.json();
-	return data.product;
+	return data;
 }
 
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({
+	params,
+}: ProductPageProps): Promise<Metadata> {
 	const product = await getProduct((await params).id);
 
 	return {
@@ -65,30 +72,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 				{/* Product Info */}
 				<div className="space-y-6">
-					<div>
-						<h1 className="mb-2 font-bold text-3xl">{product.name}</h1>
-						<p className="font-bold text-2xl text-green-600">
-							R$ {product.price.toFixed(2)}
-						</p>
-					</div>
-
 					<div className="space-y-4">
-						<div>
-							<h3 className="mb-2 font-semibold text-lg">Descrição</h3>
-							<p className="text-gray-700 leading-relaxed">
-								{product.description}
-							</p>
-						</div>
-
 						<Suspense
 							fallback={
 								<div className="h-40 animate-pulse rounded-lg bg-gray-100" />
 							}
 						>
-							{/* <ProductVariants
-								values={product.variants.sizes}
-								variants={product.variants.colors}
-							/> */}
+							<ProductVariants
+								values={product.values}
+								variants={product.variants}
+							/>
 						</Suspense>
 
 						<DeliveryCalculator />

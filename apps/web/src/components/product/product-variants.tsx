@@ -5,42 +5,34 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
-
 [
-  [
-    "P",
-    "M",
-    "G"
-  ],
-  [
-    "Preto",
-    "Azul"
-  ]
-]
+	["P", "M", "G"],
+	["Preto", "Azul"],
+];
 
 interface ProductVariantsProps {
-	values: [string[], string[]],
+	values: [string[], string[]];
 	variants: Array<{
-		id: number,
-		product_id: number,
-		price: number,
-		sku: string | null,
-		position: number,
-		compare_at_price: number,
-		values: string[],
-		created_at: string,
-		updated_at: string,
-		barcode: string | null,
-		image_id: number,
-		weight: number,
-		inventory_quantity: number,
-		image_url: string,
-	}>,
+		id: number;
+		product_id: number;
+		price: number;
+		sku: string | null;
+		position: number;
+		compare_at_price: number;
+		values: string[];
+		created_at: string;
+		updated_at: string;
+		barcode: string | null;
+		image_id: number;
+		weight: number;
+		inventory_quantity: number;
+		image_url: string;
+	}>;
 }
 
 interface VariantSelections {
-	size: string | null,
-	color: string | null,
+	size: string | null;
+	color: string | null;
 }
 
 const STORAGE_KEY = "product-variants";
@@ -55,16 +47,25 @@ export default function ProductVariants({
 
 	const [sizes, colors] = values;
 
-		const getSelectedVariant = () => {
+	const getSelectedVariant = () => {
 		if (!selectedSize || !selectedColor) return null;
-		return variants.find(variant =>
-			variant.values.includes(selectedSize) && variant.values.includes(selectedColor)
+		return variants.find(
+			(variant) =>
+				variant.values.includes(selectedSize) &&
+				variant.values.includes(selectedColor),
 		);
 	};
 
 	const isOutOfStock = () => {
 		const variant = getSelectedVariant();
 		return !variant || variant.inventory_quantity <= 0;
+	};
+
+	const formatPrice = (price: number) => {
+		return new Intl.NumberFormat("pt-BR", {
+			style: "currency",
+			currency: "BRL",
+		}).format(price);
 	};
 
 	// Inital load
@@ -112,58 +113,82 @@ export default function ProductVariants({
 			</div>
 
 			{/* Color Selection */}
-			<div>
-				<h3 className="mb-2 font-semibold text-lg">Cores</h3>
-				<div className="flex flex-wrap gap-2">
-					{colors.map((color) => (
-						<button
-							key={color}
-							onClick={() => setSelectedColor(color)}
-							className={`rounded-md border-2 px-4 py-2 transition-colors ${
-								selectedColor === color
-									? "border-green-600 text-green-600"
-									: "hover:border-green-600 hover:text-green-600"
-							}`}
-						>
-							{color}
-						</button>
-					))}
+			{colors && colors.length > 0 && (
+				<div>
+					<h3 className="mb-2 font-semibold text-lg">Cores</h3>
+					<div className="flex flex-wrap gap-2">
+						{colors.map((color) => (
+							<button
+								key={color}
+								onClick={() => setSelectedColor(color)}
+								className={`rounded-md border-2 px-4 py-2 transition-colors ${
+									selectedColor === color
+										? "border-green-600 text-green-600"
+										: "hover:border-green-600 hover:text-green-600"
+								}`}
+							>
+								{color}
+							</button>
+						))}
+					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Add to Cart */}
-			<div className="pt-6">
+			<div className="space-y-2 pt-6">
+				{getSelectedVariant() && (
+					<div className="flex items-center justify-between px-2">
+						<span className="font-semibold text-lg">Preço:</span>
+						<div>
+							<span className="mr-2 text-gray-500 line-through">
+								{formatPrice(getSelectedVariant()!.compare_at_price)}
+							</span>
+							<span className="font-bold text-green-600 text-xl">
+								{formatPrice(getSelectedVariant()!.price)}
+							</span>
+						</div>
+					</div>
+				)}
+
 				<Button
 					onClick={() => {
-						if (!selectedSize || !selectedColor) {
-							toast.error("Por favor, selecione um tamanho e uma cor");
+						if (!selectedSize || (colors?.length > 0 && !selectedColor)) {
+							toast.error(
+								"Por favor, selecione um tamanho" +
+									(colors?.length > 0 ? " e uma cor" : ""),
+							);
 							return;
 						}
 
 						const variant = getSelectedVariant();
-						
+
 						if (!variant || variant.inventory_quantity <= 0) {
 							toast.error("Produto esgotado");
 							return;
 						}
 
 						toast.success(
-							`Adicionado ao carrinho: Tamanho ${selectedSize}, Cor ${selectedColor}`,
+							`Adicionado ao carrinho: Tamanho ${selectedSize}${selectedColor ? `, Cor ${selectedColor}` : ""} - ${formatPrice(variant.price)}`,
 						);
 					}}
-					disabled={!selectedSize || !selectedColor || isOutOfStock()}
-					className={`w-full rounded-lg py-6 font-semibold text-lg transition-colors
-						${isOutOfStock() || !selectedSize || !selectedColor
-							? "bg-white text-gray-400 border-2 border-gray-200 cursor-not-allowed"
+					disabled={
+						!selectedSize ||
+						(colors?.length > 0 && !selectedColor) ||
+						isOutOfStock()
+					}
+					className={`w-full rounded-lg py-6 font-semibold text-lg transition-colors${
+						isOutOfStock() ||
+						!selectedSize ||
+						(colors?.length > 0 && !selectedColor)
+							? "cursor-not-allowed border-2 border-gray-200 bg-white text-gray-400"
 							: "bg-green-600 text-white hover:bg-green-700"
-						}`}
+					}`}
 				>
-					{!selectedSize || !selectedColor 
+					{!selectedSize || (colors?.length > 0 && !selectedColor)
 						? "Selecione as opções"
 						: isOutOfStock()
 							? "Produto esgotado"
-							: "Adicionar ao Carrinho"
-					}
+							: "Adicionar ao Carrinho"}
 				</Button>
 			</div>
 		</div>
