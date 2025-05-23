@@ -40,12 +40,23 @@ export async function generateMetadata({
 }: ProductPageProps): Promise<Metadata> {
 	const product = await getProduct((await params).id);
 
+
+	const firstVariant = product.variants[0];
+	const price = firstVariant.price;
+
 	return {
 		title: product.name,
-		description: product.description,
-		keywords: ["clothing", "store", "fashion"],
+		description: `Compre ${product.name} por ${price}.`,
+		twitter: {
+			card: "summary_large_image",
+			title: product.name,
+			description: `Compre ${product.name} por ${price}.`,
+			images: [product.variants[0].image_url],
+		},
 		openGraph: {
-			images: [product.images[0]],
+			title: product.name,
+			description: `Compre ${product.name} por ${price}.`,
+			images: [product.variants[0].image_url],
 		},
 	};
 }
