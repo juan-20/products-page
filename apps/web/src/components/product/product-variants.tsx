@@ -19,46 +19,28 @@ import { Button } from "../ui/button";
 ]
 
 interface ProductVariantsProps {
-	values: [
-		{
-			values: [
-				string[],
-				string[]
-			];
-		}
-	]
-	variants: [
-		{
-			id: number,
-      		product_id: number,
-			price: number,
-			sku: null,
-			position: number,
-			compare_at_price: number,
-			values:[
-				string
-			],
-			created_at: string,
-			updated_at: string,
-			barcode: null,
-			image_id: number,
-			weight: number,
-			inventory_quantity: number,
-			image_url: string,
-		}
-	];
+	values: [string[], string[]],
+	variants: Array<{
+		id: number,
+		product_id: number,
+		price: number,
+		sku: string | null,
+		position: number,
+		compare_at_price: number,
+		values: string[],
+		created_at: string,
+		updated_at: string,
+		barcode: string | null,
+		image_id: number,
+		weight: number,
+		inventory_quantity: number,
+		image_url: string,
+	}>,
 }
 
 interface VariantSelections {
-	values: [
-		{
-			values: [
-				string[],
-				string[]
-			];
-		}
-	]
-	variants: any[] | null;
+	size: string | null,
+	color: string | null,
 }
 
 const STORAGE_KEY = "product-variants";
@@ -68,20 +50,33 @@ export default function ProductVariants({
 	values,
 	variants,
 }: ProductVariantsProps) {
-	console.log(values[0]?.values);
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 	const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-	// Load saved selections on component mount
-	// useEffect(() => {
-	// 	const savedSelections = getWithExpiry<VariantSelections>(STORAGE_KEY);
-	// 	if (savedSelections) {
-	// 		setSelectedSize(savedSelections.size);
-	// 		setSelectedColor(savedSelections.color);
-	// 	}
-	// }, []);
+	const [sizes, colors] = values;
 
-	// Save selections whenever they change
+		const getSelectedVariant = () => {
+		if (!selectedSize || !selectedColor) return null;
+		return variants.find(variant =>
+			variant.values.includes(selectedSize) && variant.values.includes(selectedColor)
+		);
+	};
+
+	const isOutOfStock = () => {
+		const variant = getSelectedVariant();
+		return !variant || variant.inventory_quantity <= 0;
+	};
+
+	// Inital load
+	useEffect(() => {
+		const savedSelections = getWithExpiry<VariantSelections>(STORAGE_KEY);
+		if (savedSelections) {
+			setSelectedSize(savedSelections.size);
+			setSelectedColor(savedSelections.color);
+		}
+	}, []);
+
+	// State update when changed the storage
 	useEffect(() => {
 		if (selectedSize || selectedColor) {
 			setWithExpiry(
@@ -100,15 +95,19 @@ export default function ProductVariants({
 			<div>
 				<h3 className="mb-2 font-semibold text-lg">Tamanhos</h3>
 				<div className="flex flex-wrap gap-2">
-					{values.map((value, index) => (
+					{sizes.map((size) => (
 						<button
-							key={index}
-							className={`rounded-md border-2 px-4 py-2 transition-colors `}
+							key={size}
+							onClick={() => setSelectedSize(size)}
+							className={`rounded-md border-2 px-4 py-2 transition-colors ${
+								selectedSize === size
+									? "border-green-600 text-green-600"
+									: "hover:border-green-600 hover:text-green-600"
+							}`}
 						>
-							{JSON.stringify(value)}
+							{size}
 						</button>
-					)
-					)}
+					))}
 				</div>
 			</div>
 
@@ -116,20 +115,7 @@ export default function ProductVariants({
 			<div>
 				<h3 className="mb-2 font-semibold text-lg">Cores</h3>
 				<div className="flex flex-wrap gap-2">
-					{variants.map((variant, index) => (
-						<button
-							key={index}
-							onClick={() => setSelectedColor(variant.values[0])}
-							className={`rounded-md border-2 px-4 py-2 transition-colors ${
-								selectedColor === variant.values[0]
-									? "border-green-600 text-green-600"
-									: "hover:border-green-600 hover:text-green-600"
-							}`}
-						>
-							{variant.values[0]}
-						</button>
-					))}
-					{/* {colors.map((color) => (
+					{colors.map((color) => (
 						<button
 							key={color}
 							onClick={() => setSelectedColor(color)}
@@ -141,7 +127,7 @@ export default function ProductVariants({
 						>
 							{color}
 						</button>
-					))} */}
+					))}
 				</div>
 			</div>
 
@@ -153,13 +139,31 @@ export default function ProductVariants({
 							toast.error("Por favor, selecione um tamanho e uma cor");
 							return;
 						}
+
+						const variant = getSelectedVariant();
+						
+						if (!variant || variant.inventory_quantity <= 0) {
+							toast.error("Produto esgotado");
+							return;
+						}
+
 						toast.success(
 							`Adicionado ao carrinho: Tamanho ${selectedSize}, Cor ${selectedColor}`,
 						);
 					}}
-					className="w-full rounded-lg bg-green-600 py-6 font-semibold text-lg text-white transition-colors hover:bg-green-700"
+					disabled={!selectedSize || !selectedColor || isOutOfStock()}
+					className={`w-full rounded-lg py-6 font-semibold text-lg transition-colors
+						${isOutOfStock() || !selectedSize || !selectedColor
+							? "bg-white text-gray-400 border-2 border-gray-200 cursor-not-allowed"
+							: "bg-green-600 text-white hover:bg-green-700"
+						}`}
 				>
-					Adicionar ao Carrinho
+					{!selectedSize || !selectedColor 
+						? "Selecione as opções"
+						: isOutOfStock()
+							? "Produto esgotado"
+							: "Adicionar ao Carrinho"
+					}
 				</Button>
 			</div>
 		</div>
