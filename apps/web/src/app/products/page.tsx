@@ -38,18 +38,7 @@ export default async function ProductPage() {
 	return (
 		<div className="container mx-auto px-4 py-8">
 
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                            {/* Product Gallery */}
-                            <Suspense
-                                fallback={
-                                    <div className="aspect-square animate-pulse rounded-lg bg-gray-100" />
-                                }
-                            >
-                                <ProductGallery images={product.images} productName={product.title} />
-                            </Suspense>
-            
-                           
-            </div>
+      
 
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

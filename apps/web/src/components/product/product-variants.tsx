@@ -105,7 +105,7 @@ export default function ProductVariants({
 							key={index}
 							className={`rounded-md border-2 px-4 py-2 transition-colors `}
 						>
-							{}
+							{JSON.stringify(value)}
 						</button>
 					)
 					)}
